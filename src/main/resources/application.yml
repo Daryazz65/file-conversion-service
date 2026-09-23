@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: file-conversion-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/conversion
+    username: conversion
+    password: conversion
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    consumer:
+      group-id: file-conversion-service
+      properties:
+        spring.json.trusted.packages: com.example.fileconversion.dto
+
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    listener:
+      ack-mode: record
+
+app:
+  minio:
+    endpoint: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket: files
+
+  topics:
+    conversion-requested: file.conversion.requested
+    conversion-result: file.conversion.result
+
+  outbox:
+    fixed-delay: 1000
+    batch-size: 100
